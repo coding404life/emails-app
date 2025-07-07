@@ -12,6 +12,7 @@ import {
   Divider,
 } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
+import { formatDate } from "@/util/util";
 
 const SidebarEmails = ({
   filteredEmails,
@@ -20,7 +21,6 @@ const SidebarEmails = ({
   searchQuery,
   setSearchQuery,
   getInitials,
-  formatDate,
 }) => {
   return (
     <Paper

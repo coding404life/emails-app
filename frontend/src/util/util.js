@@ -7,3 +7,8 @@ export const debounce = (func, delay) => {
     }, delay);
   };
 };
+
+export const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleString();
+};

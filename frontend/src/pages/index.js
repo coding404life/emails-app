@@ -11,12 +11,29 @@ import {
 } from "@mui/material";
 import { Email as EmailIcon, Add as AddIcon } from "@mui/icons-material";
 import SidebarEmails from "@/components/SidebarEmails";
-import { debounce } from "@/util/util";
+import { debounce, formatDate } from "@/util/util";
+import EmailDialog from "@/components/EmailDialog";
 
 export default function Home() {
   const [emails, setEmails] = useState([]);
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [composeOpen, setComposeOpen] = useState(false);
+  const [composeForm, setComposeForm] = useState({
+    to: "",
+    cc: "",
+    bcc: "",
+    subject: "",
+    body: "",
+  });
+
+  const handleFormChange = (field, value) =>
+    setComposeForm((f) => ({ ...f, [field]: value }));
+  const handleComposeOpen = () => setComposeOpen(true);
+  const handleComposeClose = () => {
+    setComposeOpen(false);
+    setComposeForm({ to: "", cc: "", bcc: "", subject: "", body: "" });
+  };
 
   const fetchEmails = async (query = "") => {
     try {
@@ -26,7 +43,8 @@ export default function Home() {
 
       if (response.ok) {
         const json = await response.json();
-        console.log(json);
+
+        setEmails(json.results);
 
         return json.results;
       } else {
@@ -37,19 +55,27 @@ export default function Home() {
     }
   };
 
+  const handleComposeSubmit = async () => {
+    await fetch("http://localhost:3001/new-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(composeForm),
+    });
+    handleComposeClose();
+
+    // fetch emails list from backend => we could also update the email list in the client side
+    fetchEmails();
+  };
+
   useEffect(() => {
     // inital emails fetching
-    fetchEmails().then((emails) => {
-      setEmails(emails);
-    });
+    fetchEmails();
   }, []);
 
   const debouncedSearch = useMemo(
     () =>
       debounce((value) => {
-        fetchEmails(value).then((emails) => {
-          setEmails(emails);
-        });
+        fetchEmails(value);
       }, 500),
     []
   );
@@ -62,31 +88,8 @@ export default function Home() {
     setSelectedEmail(email);
   };
 
-  const formatDate = (timestamp) => {
-    return new Date(timestamp).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   const getInitials = (email) => {
     return email.split("@")[0].substring(0, 2).toUpperCase();
-  };
-
-  const handleComposeOpen = () => {
-    setComposeOpen(true);
-  };
-
-  const sendEmail = async (emailData) => {
-    const response = await fetch("http://localhost:3001/emails", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(emailData),
-    });
-    if (!response.ok) throw new Error("Failed to save email");
-    return await response.json();
   };
 
   return (
@@ -98,7 +101,6 @@ export default function Home() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         getInitials={getInitials}
-        formatDate={formatDate}
       />
 
       {/* Main Content Area */}
@@ -121,7 +123,7 @@ export default function Home() {
                       From: {selectedEmail.to}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {formatDate(selectedEmail.timestamp)}
+                      {formatDate(selectedEmail.created_at)}
                     </Typography>
                   </Box>
                 </Box>
@@ -184,6 +186,13 @@ export default function Home() {
       >
         <AddIcon />
       </Fab>
+      <EmailDialog
+        open={composeOpen}
+        onClose={handleComposeClose}
+        form={composeForm}
+        onFormChange={handleFormChange}
+        onSubmit={handleComposeSubmit}
+      />
     </Box>
   );
 }

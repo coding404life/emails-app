@@ -45,6 +45,8 @@ fastify.get("/emails", async (request, reply) => {
 
 fastify.post("/new-email", async (request, reply) => {
   const { to, cc, bcc, subject, body } = request.body;
+  const now = new Date().toISOString();
+
   try {
     const [id] = await knex("emails").insert({
       to,
@@ -52,8 +54,8 @@ fastify.post("/new-email", async (request, reply) => {
       bcc,
       subject,
       body,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
     });
     reply.send({ id, to, cc, bcc, subject, body });
   } catch (error) {
