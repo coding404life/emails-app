@@ -20,7 +20,7 @@
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/coding404life/emails-app.git
-cd test-NextJS-Node-Fastify
+cd emails-app
 ```
 
 ### 2. Setup the Backend
