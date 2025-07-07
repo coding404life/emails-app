@@ -19,7 +19,7 @@
 
 ### 1. Clone the Repository
 ```bash
-git clone <repo-url>
+git clone https://github.com/coding404life/emails-app.git
 cd test-NextJS-Node-Fastify
 ```
 
