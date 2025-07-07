@@ -1,5 +1,8 @@
 # Next.js + Fastify Email App
 
+![image](https://github.com/user-attachments/assets/4d3eef82-b437-416e-a8e0-fb18a7add253)
+![image](https://github.com/user-attachments/assets/6e116b95-cbe5-488e-9605-ccfc84e380ee)
+
 ## Features
 
 - **Email List Sidebar**: View all saved emails in a sidebar (Apple Mail style)
