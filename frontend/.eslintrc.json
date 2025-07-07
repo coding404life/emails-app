@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "next/babel",
+    "next/core-web-vitals"
+  ],
+  "rules": {
+    "no-unused-vars": "error",
+    "no-undef": "error",
+    "no-unreachable": "error",
+    "no-console": "warn",
+    "prefer-const": "error",
+    "no-var": "error"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  }
+}
